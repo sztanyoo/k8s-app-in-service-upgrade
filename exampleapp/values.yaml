@@ -1,0 +1,18 @@
+replicaCount: 1
+
+image:
+  repository: docker.io/sztanyoo/issu
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "2.2"
+  #tag: "1.2"
+
+service:
+  type: ClusterIP
+  port: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

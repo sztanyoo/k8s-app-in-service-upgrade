@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "exampleapp.fullname" . }}-statefulset
+  labels:
+    {{- include "exampleapp.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "exampleapp.selectorLabels" . | nindent 6 }}
+      component: statefulset
+  serviceName: "sfsbackedservice"
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        {{- include "exampleapp.selectorLabels" . | nindent 8 }}
+        component: statefulset
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        volumeMounts:
+        - name: www
+          mountPath: /somemout
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      #storageClassName: "my-storage-class"
+      resources:
+        requests:
+          storage: 10Mi

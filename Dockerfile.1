@@ -1,0 +1,5 @@
+FROM nginx:latest
+
+ADD index-1.html /usr/share/nginx/html/index.html
+ADD think.sh /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/think.sh
